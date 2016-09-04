@@ -6,20 +6,22 @@ package zhaos.pong;
  */
 public class Pong  {
 
-    private Ball puck;
+    private Ball[] puck;
     private Paddle playerPaddle;
     private Paddle opponentPaddle;
 
     public Pong(){
-        puck = new Ball();
+        puck = new Ball[1];
         playerPaddle = new Paddle();
         opponentPaddle = new Paddle();
 
     }
 
-    public Ball getPuck(){
-        return puck;
+    public Ball getPuck(int i){
+        return puck[i];
     }
+    public int getNumPucks(){return puck.length;}
+
     public Paddle getPlayer(){
         return playerPaddle;
     }
