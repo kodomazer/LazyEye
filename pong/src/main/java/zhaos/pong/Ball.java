@@ -1,6 +1,7 @@
 package zhaos.pong;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
@@ -8,7 +9,36 @@ import java.nio.FloatBuffer;
  */
 public class Ball implements renderableObject{
 
+    private FloatBuffer vertexCoordinates;
+    private FloatBuffer normals;
+    private FloatBuffer colors;
+
+
+
+
+
     public Ball(){
+
+        //Vertices
+        ByteBuffer bbVertices = ByteBuffer.allocateDirect(BALL_VERTICES.length * 4);
+        bbVertices.order(ByteOrder.nativeOrder());
+        vertexCoordinates = bbVertices.asFloatBuffer();
+        vertexCoordinates.put(BALL_VERTICES);
+        vertexCoordinates.position(0);
+
+        //Normals
+        ByteBuffer bbNormals = ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_NORMALS.length * 4);
+        bbNormals.order(ByteOrder.nativeOrder());
+        normals = bbNormals.asFloatBuffer();
+        normals.put(WorldLayoutData.FLOOR_NORMALS);
+        normals.position(0);
+
+        //Colors
+        ByteBuffer bbColors = ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COLORS.length * 4);
+        bbColors.order(ByteOrder.nativeOrder());
+        colors = bbColors.asFloatBuffer();
+        colors.put(WorldLayoutData.FLOOR_COLORS);
+        colors.position(0);
 
     }
 
@@ -18,14 +48,30 @@ public class Ball implements renderableObject{
 
     //placeholder code for rendering
     public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return vertexCoordinates;
     }
     public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return colors;
     }
     public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return normals;
     }
+
+
+    private final float[] BALL_VERTICES={
+            0,0,0,
+            0,0,0,
+    };
+
+    private final float[] BALL_NORMALS={
+            0,0,0,
+            0,0,0,
+    };
+
+    private final float[] BALL_COLORS={
+            0,0,0,
+            0,0,0,
+    };
 
 
 
