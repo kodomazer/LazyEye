@@ -8,6 +8,8 @@ import java.nio.FloatBuffer;
  * Created by kodomazer on 9/3/2016.
  */
 public class Ball implements renderableObject{
+    private Point puckPosition;
+    private Point velocity;
 
     private FloatBuffer vertexCoordinates;
     private FloatBuffer normals;
@@ -18,6 +20,8 @@ public class Ball implements renderableObject{
 
 
     public Ball(){
+        puckPosition = new Point(0,5);
+        velocity = new Point(0,-1);
 
         //Vertices
         ByteBuffer bbVertices = ByteBuffer.allocateDirect(BALL_VERTICES.length * 4);
@@ -42,8 +46,22 @@ public class Ball implements renderableObject{
 
     }
 
+    public void tick(float deltaT){// Do I need this tick? Maybe leave it in pong
+        private Point delta = new Point(velocity.x * deltaT, velocity.y * deltaT);
+        float tempY;
+        tempY = puckPosition.y +delta.y;
+
+
+    }
 
     public Point getPosition(){return new Point(1);}
+    public boolean isDead(){//Is the ball dead?
+        if(velocity.y==0){
+            return true;
+        }
+        else return false;
+
+    }
 
 
     //placeholder code for rendering
