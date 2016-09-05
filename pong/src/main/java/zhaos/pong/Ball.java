@@ -3,6 +3,7 @@ package zhaos.pong;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.Vector;
 
 /**
  * Created by kodomazer on 9/3/2016.
@@ -11,9 +12,7 @@ public class Ball implements renderableObject{
     private Point puckPosition;
     private Point velocity;
 
-    private FloatBuffer vertexCoordinates;
-    private FloatBuffer normals;
-    private FloatBuffer colors;
+
 
 
 
@@ -23,31 +22,11 @@ public class Ball implements renderableObject{
         puckPosition = new Point(0,5);
         velocity = new Point(0,-1);
 
-        //Vertices
-        ByteBuffer bbVertices = ByteBuffer.allocateDirect(BALL_VERTICES.length * 4);
-        bbVertices.order(ByteOrder.nativeOrder());
-        vertexCoordinates = bbVertices.asFloatBuffer();
-        vertexCoordinates.put(BALL_VERTICES);
-        vertexCoordinates.position(0);
-
-        //Normals
-        ByteBuffer bbNormals = ByteBuffer.allocateDirect(RenderResources.FLOOR_NORMALS.length * 4);
-        bbNormals.order(ByteOrder.nativeOrder());
-        normals = bbNormals.asFloatBuffer();
-        normals.put(RenderResources.FLOOR_NORMALS);
-        normals.position(0);
-
-        //Colors
-        ByteBuffer bbColors = ByteBuffer.allocateDirect(RenderResources.FLOOR_COLORS.length * 4);
-        bbColors.order(ByteOrder.nativeOrder());
-        colors = bbColors.asFloatBuffer();
-        colors.put(RenderResources.FLOOR_COLORS);
-        colors.position(0);
 
     }
 
     public void tick(float deltaT){// Do I need this tick? Maybe leave it in pong
-        private Point delta = new Point(velocity.x * deltaT, velocity.y * deltaT);
+        Vector3 delta = new Vector3(velocity.x * deltaT, velocity.y * deltaT);
         float tempY;
         tempY = puckPosition.y +delta.y;
 
@@ -63,16 +42,15 @@ public class Ball implements renderableObject{
 
     }
 
-
     //placeholder code for rendering
     public FloatBuffer getCoords(){
-        return vertexCoordinates;
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
     public FloatBuffer getColors(){
-        return colors;
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
     public FloatBuffer getNormals(){
-        return normals;
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
 
 

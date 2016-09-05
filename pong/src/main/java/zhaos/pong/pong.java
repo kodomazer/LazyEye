@@ -20,7 +20,7 @@ public class Pong{
 
     public Pong(){
         puck = new Ball[1];
-        puck[0] = new Ball(this);
+        puck[0] = new Ball();
         playerPaddle = new Paddle();
         opponentPaddle = new Paddle();
         leftWall = new Wall(-10);
@@ -45,14 +45,14 @@ public class Pong{
         while (getNumPucks()>0){
             //// TODO: 9/4/2016 update paddle location
             for (Ball b : puck) {//move balls
-                b.tick();
+                b.tick(1.0f);
                 if(b.isDead()){
                     gameOver = true;
-                    break
+                    break;
                 }
             }
         }
-        if (puck.length == 0)
+        if (puck.length == 0);
     }
 
     public Vector3 getTransform(){

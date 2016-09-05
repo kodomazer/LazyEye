@@ -15,18 +15,18 @@ public class Paddle extends Blocks {
 
     public Point getPosition(){return new Point(1,2);}
     public float getPaddleLength(){return paddleLength;}
-    public Point bounce(Point velocity, float x){return velocity}//should return new velocity for bounce or (0,0) if paddle missed
+    public Point bounce(Point velocity, float x){return velocity;}//should return new velocity for bounce or (0,0) if paddle missed
 
 
     //placeholder code for rendering
     public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
     public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
     public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
 
 

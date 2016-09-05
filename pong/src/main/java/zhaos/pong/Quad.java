@@ -20,6 +20,7 @@ public class Quad extends RenderingBase {
         for (int i =0;i<4;i++){
             vertexes[i]=new Vector3();
         }
+        setUniformColor(new float[]{0.0f,0.75f,0.75f,1.0f});
     }
     Quad(ObjectBase obj){
         super(obj);
@@ -27,6 +28,7 @@ public class Quad extends RenderingBase {
         for (int i =0;i<4;i++){
             vertexes[i]=new Vector3();
         }
+        setUniformColor(new float[]{0.0f,0.75f,0.75f,1.0f});
     }
 
 
@@ -81,7 +83,7 @@ public class Quad extends RenderingBase {
         bbFloorColors.order(ByteOrder.nativeOrder());
         colorBuffer = bbFloorColors.asFloatBuffer();
         for(int i =0;i<6;i++){
-            colorBuffer.put(new float[] {0.74f,0.75f,0.0f,0.75f});
+            colorBuffer.put(uniformColor);
         }
         colorBuffer.position(0);
 
