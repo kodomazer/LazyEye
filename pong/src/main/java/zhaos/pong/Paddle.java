@@ -18,13 +18,13 @@ public class Paddle implements renderableObject{
 
     //placeholder code for rendering
     public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
     }
     public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
     }
     public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COORDS.length * 4).asFloatBuffer();
+        return ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4).asFloatBuffer();
     }
 
 

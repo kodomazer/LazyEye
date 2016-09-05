@@ -27,17 +27,17 @@ public class Ball implements renderableObject{
         vertexCoordinates.position(0);
 
         //Normals
-        ByteBuffer bbNormals = ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_NORMALS.length * 4);
+        ByteBuffer bbNormals = ByteBuffer.allocateDirect(RenderResources.FLOOR_NORMALS.length * 4);
         bbNormals.order(ByteOrder.nativeOrder());
         normals = bbNormals.asFloatBuffer();
-        normals.put(WorldLayoutData.FLOOR_NORMALS);
+        normals.put(RenderResources.FLOOR_NORMALS);
         normals.position(0);
 
         //Colors
-        ByteBuffer bbColors = ByteBuffer.allocateDirect(WorldLayoutData.FLOOR_COLORS.length * 4);
+        ByteBuffer bbColors = ByteBuffer.allocateDirect(RenderResources.FLOOR_COLORS.length * 4);
         bbColors.order(ByteOrder.nativeOrder());
         colors = bbColors.asFloatBuffer();
-        colors.put(WorldLayoutData.FLOOR_COLORS);
+        colors.put(RenderResources.FLOOR_COLORS);
         colors.position(0);
 
     }

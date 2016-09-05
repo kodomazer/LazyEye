@@ -23,12 +23,13 @@ import javax.microedition.khronos.egl.EGLConfig;
 
 public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
-    private RenderItems item;
+    private RenderResources item;
     private static final String TAG = "MainView";
 
 
     // We keep the light always position just above the user.
-    private static final float[] LIGHT_POS_IN_WORLD_SPACE = new float[] {0.0f, 2.0f, 0.0f, 1.0f};
+    private static final float[] LIGHT_POS_IN_WORLD_SPACE = new float[]
+            {0.0f, 2.0f, 0.0f, 1.0f};
 
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 100.0f;
@@ -42,11 +43,13 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
     private float[] camera;
     private float[] view;
     private float[] headView;
-    private float[] modelViewProjection;
-    private float[] modelView;
-    private float[] modelFloor;
 
-    private Plane wall;
+    private Floor wall;
+    protected ObjectBase quadObject;
+    private Quad testQuad;
+
+    protected RenderingBase[] renderList;
+
 
     @Override
     public void onPause() {
@@ -143,7 +146,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        item = RenderItems.getInstance();
+        item = RenderResources.getInstance();
         item.setView(this);
 
 
@@ -154,15 +157,19 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 //        modelCube = new float[16];
         camera = new float[16];
         view = new float[16];
-        modelViewProjection = new float[16];
-        modelView = new float[16];
-        modelFloor = new float[16];
 //        tempPosition = new float[4];
         // Model first appears directly in front of user.
 //        modelPosition = new float[] {0.0f, 0.0f, -MAX_MODEL_DISTANCE / 2.0f};
         headRotation = new float[4];
         headView = new float[16];
-        wall = new Plane();
+        wall = new Floor();
+        quadObject = new ObjectBase();
+        testQuad = new Quad(quadObject);
+        testQuad.setVertices(
+                new Vector3(0,-20),
+                new Vector3(20,0),
+                new Vector3(0,20),
+                new Vector3(-20,0));
     }
 
     public void initializeGvrView() {
@@ -208,10 +215,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         GLES20.glClearColor(0.1f, 0.1f, 0.1f, 0.5f); // Dark background so text shows up well.
         item.GLESLoaded();
 
-        wall.initializePlane();
-        Matrix.setIdentityM(modelFloor, 0);
-        Matrix.translateM(modelFloor, 0, 0, -20, 0);
-
+        wall.BuildModel();
     }
 
 
@@ -235,12 +239,11 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         // for calculating cube position and light.
         float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
 
-        // Set modelView for the floor, so we draw floor in the correct location
-        Matrix.multiplyMM(modelView, 0, view, 0, modelFloor, 0);
-        Matrix.multiplyMM(modelViewProjection, 0, perspective, 0, modelView, 0);
-
-        wall.Draw(modelFloor, modelView, modelViewProjection, lightPosInEyeSpace);
+        wall.Draw(view, perspective, lightPosInEyeSpace);
+        testQuad.Draw(view, perspective, lightPosInEyeSpace);
         //drawFloor();
+
+
     }
 
     /**
@@ -262,323 +265,9 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         checkGLError("onReadyToDraw");
     }
 
-}
-final class WorldLayoutData {
-
-    public static final float[] CUBE_COORDS = new float[] {
-            // Front face
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-
-            // Right face
-            1.0f, 1.0f, 1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            1.0f, -1.0f, -1.0f,
-            1.0f, 1.0f, -1.0f,
-
-            // Back face
-            1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-            1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, -1.0f,
-
-            // Left face
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, 1.0f, 1.0f,
-
-            // Top face
-            -1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-            -1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, -1.0f,
-
-            // Bottom face
-            1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-            1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, 1.0f,
-            -1.0f, -1.0f, -1.0f,
-    };
-
-    public static final float[] CUBE_COLORS = new float[] {
-            // front, green
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-
-            // right, blue
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-
-            // back, also green
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-            0f, 0.5273f, 0.2656f, 1.0f,
-
-            // left, also blue
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-
-            // top, red
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-
-            // bottom, also red
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-            0.8359375f,  0.17578125f,  0.125f, 1.0f,
-    };
-
-    public static final float[] CUBE_FOUND_COLORS = new float[] {
-            // front, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-
-            // right, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-
-            // back, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-
-            // left, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-
-            // top, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-
-            // bottom, yellow
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-            1.0f,  0.6523f, 0.0f, 1.0f,
-    };
-
-    public static final float[] CUBE_NORMALS = new float[] {
-            // Front face
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f,
-
-            // Right face
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f,
-
-            // Back face
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f,
-
-            // Left face
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-            -1.0f, 0.0f, 0.0f,
-
-            // Top face
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-
-            // Bottom face
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f,
-            0.0f, -1.0f, 0.0f
-    };
-
-    // The grid lines on the floor are rendered procedurally and large polygons cause floating point
-    // precision problems on some architectures. So we split the floor into 4 quadrants.
-    public static final float[] FLOOR_COORDS = new float[] {
-            // +X, +Z quadrant
-            7, 10, 7,
-            10, 30, 5,
-            5, 30, 10,
-            100, 100, 0,
-            0, 100, 100,
-            100, 200, 100,
-
-            // -X, +Z quadrant
-            0, 0, 0,
-            -200, 0, 0,
-            -200, 0, 200,
-            0, 0, 0,
-            -200, 0, 200,
-            0, 0, 200,
-
-            // +X, -Z quadrant
-            200, 0, -200,
-            0, 0, -200,
-            0, 0, 0,
-            200, 0, -200,
-            0, 0, 0,
-            200, 0, 0,
-
-            // -X, -Z quadrant
-            0, 0, -200,
-            -200, 0, -200,
-            -200, 0, 0,
-            0, 0, -200,
-            -200, 0, 0,
-            0, 0, 0,
-    };
-
-    public static final float[] FLOOR_NORMALS = new float[] {
-            0.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 0.0f,
-    };
-
-    public static final float[] FLOOR_COLORS = new float[] {
-            1.0f,  0.0f,  0.0f, 1.0f,
-            0.0f,  1.0f,  0.0f, 1.0f,
-            0.0f,  0.0f,  1.0f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-            0.0f, 0.3398f, 0.9023f, 1.0f,
-    };
-
-    public static final float[] FLOOR_COLORS1 = new float[] {
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-            1.0f, 0.3398f, 0.9023f, 1.0f,
-    };
+    @Override
+    public void onCardboardTrigger() {
+        super.onCardboardTrigger();
+        quadObject.translate(new Vector3(0,0,-1f));
+    }
 }
