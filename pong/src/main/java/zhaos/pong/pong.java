@@ -4,8 +4,9 @@ package zhaos.pong;
 /**
  * Created by kodomazer on 9/2/2016.
  */
-public class Pong  {
+public class Pong{
 
+    protected Vector3 transform;
     private Ball[] puck;
     private Paddle playerPaddle;
     private Paddle opponentPaddle;
@@ -52,6 +53,10 @@ public class Pong  {
             }
         }
         if (puck.length == 0)
+    }
+
+    public Vector3 getTransform(){
+        return transform;
     }
 
     public Ball getPuck(int i){
