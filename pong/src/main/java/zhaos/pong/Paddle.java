@@ -6,7 +6,7 @@ import java.nio.FloatBuffer;
 /**
  * Created by kodomazer on 9/3/2016.
  */
-public class Paddle implements renderableObject{
+public class Paddle extends Blocks {
     private float paddleLength;
 
     public Paddle(){
