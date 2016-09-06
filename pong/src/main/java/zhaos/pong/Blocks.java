@@ -3,15 +3,16 @@ package zhaos.pong;
 /**
  * Created by ambersz on 9/4/2016.
  */
-public class Blocks implements renderableObject {
-    private Point center;
+public class Blocks extends ObjectBase {
+    private Vector3 center;
 
     public Blocks(){
-        center = new Point();
+        center = new Vector3();
     }
 
-    private Point collidesWith(Point origin, Point velocity){
+    public boolean collidesWith(Vector3 origin, Vector3 velocity){
 
     }
+
 
 }
