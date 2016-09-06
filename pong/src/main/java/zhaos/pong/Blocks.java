@@ -6,19 +6,18 @@ import java.nio.FloatBuffer;
 /**
  * Created by ambersz on 9/4/2016.
  */
-public class Blocks implements renderableObject {
-    private Point center;
+public class Blocks extends ObjectBase {
+    private Vector3 center;
 
     public Blocks(){
-        center = new Point();
+        center = new Vector3();
     }
 
-    private Point collidesWith(Point origin, Point velocity){
-        return new Point(0,0);
+
+    public boolean collidesWith(Vector3 origin, Vector3 velocity) {
+        //TODO put im collision check
+        return false;
     }
-
-    public Point getPosition(){return new Point(1,2);}
-
     //placeholder code for rendering
     public FloatBuffer getCoords(){
         return ByteBuffer.allocateDirect( 4).asFloatBuffer();
@@ -29,5 +28,6 @@ public class Blocks implements renderableObject {
     public FloatBuffer getNormals(){
         return ByteBuffer.allocateDirect(4).asFloatBuffer();
     }
+
 
 }

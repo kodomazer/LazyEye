@@ -8,9 +8,10 @@ import java.util.Vector;
 /**
  * Created by kodomazer on 9/3/2016.
  */
-public class Ball implements renderableObject{
-    private Point puckPosition;
-    private Point velocity;
+public class Ball extends ObjectBase{
+    private Vector3 puckPosition;
+    private Vector3 velocity;
+    private boolean active;
 
 
 
@@ -19,28 +20,31 @@ public class Ball implements renderableObject{
 
 
     public Ball(){
-        puckPosition = new Point(0,5);
-        velocity = new Point(0,-1);
+        puckPosition = new Vector3(0,5);
+        velocity = new Vector3(0,-1);
+        active = true;
 
 
     }
 
-    public void tick(float deltaT){// Do I need this tick? Maybe leave it in pong
-        Vector3 delta = new Vector3(velocity.x * deltaT, velocity.y * deltaT);
-        float tempY;
-        tempY = puckPosition.y +delta.y;
 
+    public boolean isActive(){ return active;}
 
+//    public void tick(float deltaT){// Do I need this tick? Maybe leave it in pong
+//        private Vector3 delta = new Vector3(velocity.x * deltaT, velocity.y * deltaT);
+//        float tempY;
+//        tempY = puckPosition.y +delta.y;
+//
+//
+//    }
+
+    public Vector3 getPosition(){return puckPosition;}
+    public Vector3 getVelocity(){return velocity;}
+
+    public void move(float deltaT){
+        puckPosition = puckPosition.add(velocity.scale(deltaT));
     }
 
-    public Point getPosition(){return new Point(1);}
-    public boolean isDead(){//Is the ball dead?
-        if(velocity.y==0){
-            return true;
-        }
-        else return false;
-
-    }
 
     //placeholder code for rendering
     public FloatBuffer getCoords(){
