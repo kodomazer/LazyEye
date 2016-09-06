@@ -9,24 +9,22 @@ import java.util.Vector;
  * Created by kodomazer on 9/3/2016.
  */
 public class Ball extends ObjectBase{
-    private Vector3 puckPosition;
-    private Vector3 velocity;
-    private boolean active;
+    protected Vector3 velocity;
 
 
+    protected boolean active;
 
-
-
-
-
-    public Ball(){
-        puckPosition = new Vector3(0,5);
+    public Ball(ObjectBase parent){
+        super(parent);
+        transform = new Vector3(0,5);
         velocity = new Vector3(0,-1);
         active = true;
 
-
+        UniformRadialRender ball = new UniformRadialRender(this);
+        ball.setSections(20);
+        ball.setRadius(1);
+        render = ball;
     }
-
 
     public boolean isActive(){ return active;}
 
@@ -38,41 +36,11 @@ public class Ball extends ObjectBase{
 //
 //    }
 
-    public Vector3 getPosition(){return puckPosition;}
-    public Vector3 getVelocity(){return velocity;}
+    public Vector3 getVelocity(){
+        return velocity;
+    }
 
     public void move(float deltaT){
-        puckPosition = puckPosition.add(velocity.scale(deltaT));
+        super.translate(velocity.scale(deltaT));
     }
-
-
-    //placeholder code for rendering
-    public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
-    public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
-    public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
-
-
-    private final float[] BALL_VERTICES={
-            0,0,0,
-            0,0,0,
-    };
-
-    private final float[] BALL_NORMALS={
-            0,0,0,
-            0,0,0,
-    };
-
-    private final float[] BALL_COLORS={
-            0,0,0,
-            0,0,0,
-    };
-
-
-
 }

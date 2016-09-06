@@ -34,12 +34,19 @@ public class Vector3 {
         z = a.z;
     }
     public Vector3 add(Vector3 a){
-        return new Vector3(this.x+a.x,this.y+a.y,this.z+a.z);
+        return new Vector3(this.x+a.x,
+                this.y+a.y,
+                this.z+a.z);
     }
+
     public Vector3 subtract(Vector3 a){
-        return new Vector3(this.x-a.x,this.y-a.y,this.z-a.z);
+        return new Vector3(this.x-a.x,
+                this.y-a.y,
+                this.z-a.z);
     }
+
     public Vector3 scale(float a){return new Vector3(this.x*a, this.y*a, this.z*a);}
+
     public Vector3 cross(Vector3 a) {
         return new Vector3(
                 this.y * a.z - this.z * a.y,
@@ -49,4 +56,5 @@ public class Vector3 {
     public float dot(Vector3 a) {
         return this.x * a.x + this.y * a.y + this.z * a.z;
     }
+
 }

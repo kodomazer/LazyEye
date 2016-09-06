@@ -46,11 +46,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
     private Floor wall;
 
-    protected ObjectBase radialObject;
-    protected UniformRadialRender testRadial;
-
-    protected ObjectBase quadObject;
-    private Quad testQuad;
+    protected Pong gameInstance;
 
     protected RenderingBase[] renderList;
 
@@ -167,20 +163,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         headRotation = new float[4];
         headView = new float[16];
         wall = new Floor();
-        quadObject = new ObjectBase();
-        quadObject.translate(new Vector3(-10,-10,-20));
-        testQuad = new Quad(quadObject);
-        testQuad.setVertices(
-                new Vector3(0,0),
-                new Vector3(20,0),
-                new Vector3(20,20),
-                new Vector3(0,20));
-
-        radialObject = new ObjectBase();
-        radialObject.translate(new Vector3(0,0,-10));
-        testRadial = new UniformRadialRender(radialObject);
-        testRadial.setRadius(1);
-        testRadial.setSections(10);
+        gameInstance = new Pong();
     }
 
     public void initializeGvrView() {
@@ -251,11 +234,17 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         float[] perspective = eye.getPerspective(Z_NEAR, Z_FAR);
 
         wall.Draw(view, perspective, lightPosInEyeSpace);
-        testQuad.Draw(view, perspective, lightPosInEyeSpace);
-        testRadial.Draw(view, perspective, lightPosInEyeSpace);
-        //drawFloor();
 
+        gameInstance.getRender().Draw(view, perspective, lightPosInEyeSpace);
 
+        //Draw respective objects in each eye
+        for (ObjectBase o : eye.getType() == 1 ?
+                gameInstance.getRenderListLeft() :
+                gameInstance.getRenderListRight()) {
+            RenderingBase r = o.getRender();
+            if (r!=null)
+                r.Draw(view, perspective, lightPosInEyeSpace);
+        }
     }
 
     /**
@@ -280,6 +269,5 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
     @Override
     public void onCardboardTrigger() {
         super.onCardboardTrigger();
-        quadObject.translate(new Vector3(0,0,-1f));
     }
 }

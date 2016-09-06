@@ -5,20 +5,27 @@ package zhaos.pong;
  * Base classes for any objects that might contain a renderable object
  */
 public class ObjectBase {
-    protected Vector3 transform;
     protected ObjectBase parent;
-    static public final ObjectBase empty = new ObjectBase();
+    protected RenderingBase render;
 
+    protected Vector3 transform;
 
-    public ObjectBase(){
+    static public final ObjectBase empty = new ObjectBase(null);
+
+    public ObjectBase(ObjectBase parent){
         transform=new Vector3();
-        parent = null;
+        this.parent = parent;
+        render = null;
     }
 
     static ObjectBase getEmpty(){
         return empty;
     }
 
+
+    public RenderingBase getRender(){
+        return render;
+    }
 
     public Vector3 getPosition(){
         if(parent==null)
@@ -31,6 +38,7 @@ public class ObjectBase {
         transform.y = newPosition.y;
         transform.z = newPosition.z;
     }
+
     public void translate(Vector3 movement){
         transform.x += movement.x;
         transform.y += movement.y;

@@ -2,11 +2,7 @@ package zhaos.pong;
 
 import android.opengl.GLES20;
 import android.opengl.Matrix;
-import android.renderscript.BaseObj;
-import android.util.Log;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
 /**
@@ -73,8 +69,8 @@ public abstract class RenderingBase {
     public void setUniformColor(float[] color){
         if(color.length==4)
             uniformColor = color;
+        built = false;
     }
-
 
     public void Draw(float[] view,
                      float[] perspective,
@@ -113,14 +109,4 @@ public abstract class RenderingBase {
         RenderResources.checkGLError("drawing floor");
 
     }
-
-    String toString(float[] arr){
-        StringBuilder a = new StringBuilder();
-        for (float b : arr){
-            a.append(b);
-            a.append(',');
-        }
-        return a.toString();
-    }
-
 }

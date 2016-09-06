@@ -28,12 +28,13 @@ public class Pong extends ObjectBase{
     private ObjectBase[] renderRight;
 
     public Pong(){
+        super(null);
         puck = new Ball[1];
-        puck[0] = new Ball();
-        playerPaddle = new Paddle();
-        opponentPaddle = new Paddle();
-        leftWall = new Wall(-10);
-        rightWall = new Wall(10);
+        puck[0] = new Ball(this);
+        playerPaddle = new Paddle(this);
+        opponentPaddle = new Paddle(this);
+        leftWall = new Wall(this,-10);
+        rightWall = new Wall(this,10);
         gameOver = false;
         score = 0;
         colliders = new Blocks[4];
@@ -47,22 +48,37 @@ public class Pong extends ObjectBase{
         renderLeft[1] = renderRight[1] = rightWall;
         renderLeft[2] = renderRight[2] = opponentPaddle;
         renderRight[3] = playerPaddle;
-        renderLeft[3] = getPuck(1); // ONLY THE FIRST BALL WILL BE RENDERED IF INCLUDING MORE THAN ONE
+        renderLeft[3] = getPuck(1);
+        // ONLY THE FIRST BALL WILL BE RENDERED IF INCLUDING MORE THAN ONE
+
+        Quad background = new Quad(this);
+        background.setVertices(
+                new Vector3(-10,20,-1),
+                new Vector3(10,20,-1),
+                new Vector3(10,-20,-1),
+                new Vector3(-10,-20,-1));
+        render = background;
+        render.setUniformColor(new float[]{0.5f,0.5f,0.5f,0.5f});
+        translate(new Vector3(0,0,-20));
+
     }
 
-    private boolean checkCollisions(Ball b, float deltaT){
+    private boolean checkCollisions(Ball b, float deltaT) {
         boolean collided = false;
-        for(Blocks c: colliders){
-            if(collided){
+        for (Blocks c : colliders) {
+            if (collided) {
                 break;
             } else {
-                collided = c.collidesWith(b.getPosition(),b.getVelocity().scale(deltaT));
+                collided = c.collidesWith(b.getPosition(), b.getVelocity().scale(deltaT));
             }
 
         }
         return collided;
-        //// TODO: 9/5/2016 check for each element of colliders if collision; return true if it collided with anything
-        // each collider should change the relevant game state (walls & paddles change vel; goals kill ball)
+        /** TODO: 9/5/2016 check for each element of colliders if collision;
+         * return true if it collided with anything
+         * each collider should change the relevant game state
+         * (walls & paddles change vel; goals kill ball)
+         */
     }
 
     private void tick(float deltaT) {
@@ -86,17 +102,6 @@ public class Pong extends ObjectBase{
         } else {// SCORE IS 0 AND SOMETHING WENT WRONG
 
         }
-    }
-
-
-
-
-    //
-
-
-    //
-    public Vector3 getTransform(){
-        return transform;
     }
 
     public Ball getPuck(int i){
