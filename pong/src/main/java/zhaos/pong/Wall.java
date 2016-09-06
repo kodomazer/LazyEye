@@ -23,12 +23,13 @@ public class Wall extends Blocks {
         render = wall;
     }
 
-    public boolean collidesWith(Vector3 position, Vector3 velocity){
-        //TODO Collision Check
-        return false;
-    }
-    public void collisionResult(Vector3 position, Vector3 velocity){
-        //TODO bounce angle, change position and velocity
-    }
 
+    public boolean collidesWith(Ball b, Vector3 delta){
+        if((b.transform.x - transform.x) * (b.transform.x + delta.x - transform.x) < 0){
+            Vector3 intercept = b.transform.add(delta.scale((transform.x-b.transform.x)/delta.x));
+            b.setPosition(intercept);
+            //// TODO: 9/5/2016 update velocity after bounce
+            return true;
+        } else {return false;}
+    }
 }

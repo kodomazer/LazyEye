@@ -12,8 +12,7 @@ public abstract class Blocks extends ObjectBase {
         super(parent);
     }
 
-    public abstract boolean collidesWith(Vector3 position, Vector3 velocity);
-    public abstract void collisionResult(Vector3 position, Vector3 velocity);
+    public abstract boolean collidesWith(Ball ball, Vector3 velocity);
 
 
 }

@@ -26,18 +26,33 @@ public class Pong extends ObjectBase{
     private int score;
     private ObjectBase[] renderLeft;
     private ObjectBase[] renderRight;
+    private Goal playerGoal;
+    private Goal opponentGoal;
 
     public Pong(){
         super(null);
         puck = new Ball[1];
         puck[0] = new Ball(this);
-        playerPaddle = new Paddle(this);
-        opponentPaddle = new Paddle(this);
+        playerPaddle = new Paddle(this,-20);
+        opponentPaddle = new Paddle(this, 20);
+        playerGoal = new Goal(true);//locations of goals hardcoded into constructor
+        opponentGoal = new Goal(false);//locations of goals hardcoded into constructor
         leftWall = new Wall(this,-10);
         rightWall = new Wall(this,10);
         gameOver = false;
         score = 0;
         colliders = new Blocks[4];
+
+        //Collide with paddles, goals, walls in order
+
+        colliders[0] = playerPaddle;
+        colliders[1] = opponentPaddle;
+        colliders[2] = playerGoal;
+        colliders[3] = opponentGoal;
+        colliders[4] = leftWall;
+        colliders[5] = rightWall;
+
+        //
 
         renderLeft = new ObjectBase[4]; //needs to be expanded if more than 1 ball
         renderRight = new ObjectBase[4]; //needs to be expanded if more than 1 ball
@@ -69,21 +84,22 @@ public class Pong extends ObjectBase{
             if (collided) {
                 break;
             } else {
-                collided = c.collidesWith(b.getPosition(), b.getVelocity().scale(deltaT));
+                collided = c.collidesWith(b, b.getVelocity().scale(deltaT));
             }
 
         }
         return collided;
-        /** TODO: 9/5/2016 check for each element of colliders if collision;
+        /** 9/5/2016 check for each element of colliders if collision;
          * return true if it collided with anything
          * each collider should change the relevant game state
          * (walls & paddles change vel; goals kill ball)
          */
     }
 
-    private void tick(float deltaT) {
+    private void tick(float deltaT, Vector3 playerSight) {
         if (getNumPucks() > 0) {
-            //// TODO: 9/4/2016 update paddle location
+            playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
+            opponentPaddle.updatePaddlePosition(paddleAI()); //update opponent paddle
 
             //move balls
             for (Ball b : puck) {
@@ -93,15 +109,22 @@ public class Pong extends ObjectBase{
                     b.move(deltaT);
                 }
             }
-        }
-
-        if(score>0) {
+        }else if(score>0) {
                 //TODO GAME OVER; YOU WIN
         } else if(score < 0){
                 //TODO GAME OVER; YOU LOSE
         } else {// SCORE IS 0 AND SOMETHING WENT WRONG
 
         }
+    }
+
+    private float paddleAI(){
+        //TODO create opponent paddle AI
+        return 0;
+    }
+
+    public void updateScore(int i){
+        score +=i;
     }
 
     public Ball getPuck(int i){
