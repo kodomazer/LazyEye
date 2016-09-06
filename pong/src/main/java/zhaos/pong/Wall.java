@@ -6,35 +6,29 @@ import java.nio.FloatBuffer;
 
 /**
  * Created by ambersz on 9/4/2016.
+ * vertical wall
  */
-public class Wall extends Blocks {//vertical wall
-    private float wallHeight;
-    private float x;
+public class Wall extends Blocks {
 
-    public Wall(float position){
-        x = position;
-        wallHeight=10;
+    public Wall(ObjectBase parent,float position){
+        super(parent);
+        transform.x = position;
+
+        Quad wall = new Quad(this);
+        wall.setVertices(
+                new Vector3(-2,5),
+                new Vector3(2,5),
+                new Vector3(2,-5),
+                new Vector3(-2,-5));
+        render = wall;
     }
 
+    public boolean collidesWith(Vector3 position, Vector3 velocity){
+        //TODO Collision Check
+        return false;
+    }
+    public void collisionResult(Vector3 position, Vector3 velocity){
+        //TODO bounce angle, change position and velocity
+    }
 
-    public Point getPosition(){return new Point(1,2);}
-
-    public Point getX(){
-        return new Point((int)x);
-    }
-    public float getWallHeight(){
-        return wallHeight;
-    }
-    public Point bounce(Point velocity, float x){return velocity;}//should return new velocity for bounce
-
-    // placeholder code for rendering
-    public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
-    public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
-    public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
 }

@@ -9,25 +9,25 @@ import java.nio.FloatBuffer;
 public class Paddle extends Blocks {
     private float paddleLength;
 
-    public Paddle(){
+
+    public Paddle(ObjectBase parent){
+        super(parent);
         paddleLength = 1;
     }
 
-    public Point getPosition(){return new Point(1,2);}
+    public Vector3 getPosition(){return new Vector3(1,2);}
     public float getPaddleLength(){return paddleLength;}
-    public Point bounce(Point velocity, float x){return velocity;}//should return new velocity for bounce or (0,0) if paddle missed
 
 
-    //placeholder code for rendering
-    public FloatBuffer getCoords(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
+
+    public boolean collidesWith(Vector3 position, Vector3 velocity){
+        //TODO Collision Check
+        return false;
     }
-    public FloatBuffer getColors(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
+    public void collisionResult(Vector3 position, Vector3 velocity){
+        //TODO bounce angle, change position and velocity
     }
-    public FloatBuffer getNormals(){
-        return ByteBuffer.allocateDirect(4).asFloatBuffer();
-    }
+
 
 
 
