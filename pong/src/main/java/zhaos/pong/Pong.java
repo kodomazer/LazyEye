@@ -68,6 +68,7 @@ public class Pong extends ObjectBase{
     private void tick(float deltaT) {
         if (getNumPucks() > 0) {
             //// TODO: 9/4/2016 update paddle location
+
             //move balls
             for (Ball b : puck) {
                 if (checkCollisions(b, deltaT)) {

@@ -26,6 +26,8 @@ public abstract class RenderingBase {
     protected FloatBuffer colorBuffer;
     protected FloatBuffer normalBuffer;
 
+    protected float[] uniformColor;
+
     protected int renderProgram;
 
     protected int renderNumber;
@@ -50,6 +52,8 @@ public abstract class RenderingBase {
         modelView = new float[16];
         modelViewProjection = new float[16];
 
+        uniformColor = new float[4];
+
         Matrix.setIdentityM(model, 0);
 
         renderNumber = 0;
@@ -66,6 +70,10 @@ public abstract class RenderingBase {
 
     protected abstract void BuildModel();
 
+    public void setUniformColor(float[] color){
+        if(color.length==4)
+            uniformColor = color;
+    }
 
 
     public void Draw(float[] view,

@@ -45,6 +45,10 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
     private float[] headView;
 
     private Floor wall;
+
+    protected ObjectBase radialObject;
+    protected UniformRadialRender testRadial;
+
     protected ObjectBase quadObject;
     private Quad testQuad;
 
@@ -164,12 +168,19 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         headView = new float[16];
         wall = new Floor();
         quadObject = new ObjectBase();
+        quadObject.translate(new Vector3(-10,-10,-20));
         testQuad = new Quad(quadObject);
         testQuad.setVertices(
-                new Vector3(0,-20),
+                new Vector3(0,0),
                 new Vector3(20,0),
-                new Vector3(0,20),
-                new Vector3(-20,0));
+                new Vector3(20,20),
+                new Vector3(0,20));
+
+        radialObject = new ObjectBase();
+        radialObject.translate(new Vector3(0,0,-10));
+        testRadial = new UniformRadialRender(radialObject);
+        testRadial.setRadius(1);
+        testRadial.setSections(10);
     }
 
     public void initializeGvrView() {
@@ -241,6 +252,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
         wall.Draw(view, perspective, lightPosInEyeSpace);
         testQuad.Draw(view, perspective, lightPosInEyeSpace);
+        testRadial.Draw(view, perspective, lightPosInEyeSpace);
         //drawFloor();
 
 

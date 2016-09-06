@@ -24,22 +24,22 @@ public class Floor extends RenderingBase {
     public void BuildModel(){
         if(!RenderResources.isGLES())return;
         // make a floor
-        ByteBuffer bbFloorVertices = ByteBuffer.allocateDirect(RenderResources.FLOOR_COORDS.length * 4);
+        ByteBuffer bbFloorVertices = ByteBuffer.allocateDirect(FLOOR_COORDS.length * 4);
         bbFloorVertices.order(ByteOrder.nativeOrder());
         vertexBuffer = bbFloorVertices.asFloatBuffer();
-        vertexBuffer.put(RenderResources.FLOOR_COORDS);
+        vertexBuffer.put(FLOOR_COORDS);
         vertexBuffer.position(0);
 
-        ByteBuffer bbFloorNormals = ByteBuffer.allocateDirect(RenderResources.FLOOR_NORMALS.length * 4);
+        ByteBuffer bbFloorNormals = ByteBuffer.allocateDirect(FLOOR_NORMALS.length * 4);
         bbFloorNormals.order(ByteOrder.nativeOrder());
         normalBuffer = bbFloorNormals.asFloatBuffer();
-        normalBuffer.put(RenderResources.FLOOR_NORMALS);
+        normalBuffer.put(FLOOR_NORMALS);
         normalBuffer.position(0);
 
-        ByteBuffer bbFloorColors = ByteBuffer.allocateDirect(RenderResources.FLOOR_COLORS.length * 4);
+        ByteBuffer bbFloorColors = ByteBuffer.allocateDirect(FLOOR_COLORS.length * 4);
         bbFloorColors.order(ByteOrder.nativeOrder());
         colorBuffer = bbFloorColors.asFloatBuffer();
-        colorBuffer.put(RenderResources.FLOOR_COLORS);
+        colorBuffer.put(FLOOR_COLORS);
         colorBuffer.position(0);
 
 
@@ -64,5 +64,95 @@ public class Floor extends RenderingBase {
         renderParamRows = 24;
         built=true;
     }
+
+    // The grid lines on the floor are rendered procedurally and large polygons cause floating point
+    // precision problems on some architectures. So we split the floor into 4 quadrants.
+    public static final float[] FLOOR_COORDS = new float[] {
+            // +X, +Z quadrant
+            0, 0, 0,
+            100, 0, 0,
+            0, 0, 100,
+            100, 0, 100,
+            0, 0, 100,
+            100, 0, 0,
+
+            // -X, +Z quadrant
+            0, 0, 0,
+            -100, 0, 0,
+            -100, 0, 100,
+            0, 0, 0,
+            -100, 0, 100,
+            0, 0, 100,
+
+            // +X, -Z quadrant
+            100, 0, -100,
+            0, 0, -100,
+            0, 0, 0,
+            100, 0, -100,
+            0, 0, 0,
+            100, 0, 0,
+
+            // -X, -Z quadrant
+            0, 0, -100,
+            -100, 0, -100,
+            -100, 0, 0,
+            0, 0, -100,
+            -100, 0, 0,
+            0, 0, 0,
+    };
+
+    public static final float[] FLOOR_NORMALS = new float[] {
+            0.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+    };
+
+    public static final float[] FLOOR_COLORS = new float[] {
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+            0.0f, 0.3398f, 0.9023f, 1.0f,
+    };
 
 }
