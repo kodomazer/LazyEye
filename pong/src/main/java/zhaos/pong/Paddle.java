@@ -13,7 +13,7 @@ public class Paddle extends Blocks {
     private float leftPaddleWall;
     private float rightPaddleWall;
     private float curvature; // curvature of paddle for bounce purposes
-    protected float paddleThickness;
+
 
 
     public void updatePaddlePosition(float playerSight){
@@ -28,14 +28,14 @@ public class Paddle extends Blocks {
         leftPaddleWall = -10 + paddleRadius;
         rightPaddleWall = 10 - paddleRadius;
         curvature = (float) Math.PI / 6 / paddleRadius;
-        paddleThickness = 1.0f;
+        thickness = 1.0f;
 
         Quad paddle = new Quad(this);
         paddle.setVertices(
-                new Vector3(-paddleRadius,paddleThickness),
-                new Vector3(paddleRadius,paddleThickness),
-                new Vector3(paddleRadius,-paddleThickness),
-                new Vector3(-paddleRadius,-paddleThickness));
+                new Vector3(-paddleRadius,thickness),
+                new Vector3(paddleRadius,thickness),
+                new Vector3(paddleRadius,-thickness),
+                new Vector3(-paddleRadius,-thickness));
         render = paddle;
     }
 
@@ -45,29 +45,44 @@ public class Paddle extends Blocks {
         return new Vector3((float) Math.sin(offsetFromCenter*curvature), (float) Math.cos(offsetFromCenter * curvature));
     }
 
-    public boolean collidesWith(Ball b, Vector3 delta){
-        float contactPointOffset;
+    public boolean collidesWith(Ball b, Vector3 delta) {
 
-        if (b.transform.y > transform.y) {
-            contactPointOffset = -b.getRadius()-paddleThickness;
-        }else if(b.transform.y<transform.y){
-            contactPointOffset = b.getRadius()+paddleThickness;
-        }else {
+
+        float contactPointOffset;
+        float ballToPaddle = b.transform.y - transform.y; //distance from center of ball to center of paddle, positive if ball above, negative if ball below
+
+
+        if (b.getVelocity().y<0) {
+            contactPointOffset = -1;
+        } else if (b.getVelocity().y>0) {
+            contactPointOffset = 1;
+        } else {
             return false;
         }
 
-        if((b.transform.y + contactPointOffset - transform.y) * (b.transform.y + contactPointOffset + delta.y - transform.y) < 0){
+//        if (Math.abs(ballToPaddle + contactPointOffset * b.getRadius()) < thickness) {//if contact point is inside paddle, no collision
+//            return false;
+//        }
 
 
-            Vector3 intercept = b.transform.add(delta.scale((transform.y-(b.transform.y+ contactPointOffset))/delta.y));
-            if(intercept.x<transform.x+paddleRadius && intercept.x > transform.x - paddleRadius){
+        contactPointOffset *= b.getRadius() + thickness;
+
+        if ((ballToPaddle + contactPointOffset) * (ballToPaddle + contactPointOffset + delta.y) < 0) {
+
+
+            Vector3 intercept = b.transform.add(delta.scale(-(ballToPaddle + contactPointOffset) / delta.y));
+            if (Math.abs(intercept.x - transform.x) < paddleRadius) {
                 b.setPosition(intercept);
 
                 b.setVelocity(b.getVelocity().reflectOverNorm(getBounceNorm(intercept.x - transform.x))); //update velocity after bounce
 
                 return true;
-            }else{return false;}
-        } else {return false;}
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
 

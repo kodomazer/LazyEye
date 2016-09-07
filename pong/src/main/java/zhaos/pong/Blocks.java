@@ -7,6 +7,7 @@ import java.nio.FloatBuffer;
  * Created by ambersz on 9/4/2016.
  */
 public abstract class Blocks extends ObjectBase {
+    protected float thickness;
 
     public Blocks(ObjectBase parent){
         super(parent);
