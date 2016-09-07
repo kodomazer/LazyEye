@@ -17,10 +17,10 @@ public class Wall extends Blocks {
 
         Quad wall = new Quad(this);
         wall.setVertices(
-                new Vector3(-2,5),
-                new Vector3(2,5),
-                new Vector3(2,-5),
-                new Vector3(-2,-5));
+                new Vector3(-0.5f,10),
+                new Vector3(0.5f,10),
+                new Vector3(0.5f,-10),
+                new Vector3(-0.5f,-10));
         render = wall;
     }
 

@@ -80,10 +80,10 @@ public class Pong extends ObjectBase{
 
         Quad background = new Quad(this);
         background.setVertices(
-                new Vector3(-10,20,-1),
-                new Vector3(10,20,-1),
-                new Vector3(10,-20,-1),
-                new Vector3(-10,-20,-1));
+                new Vector3(-10,20,-0.1f),
+                new Vector3(10,20,-0.1f),
+                new Vector3(10,-20,-0.1f),
+                new Vector3(-10,-20,-0.1f));
         render = background;
         render.setUniformColor(new float[]{0.5f,0.5f,0.5f,0.5f});
         translate(new Vector3(0,0,-20));
