@@ -55,6 +55,17 @@ public class Pong extends ObjectBase{
 
         //
 
+        //Collide with paddles, goals, walls in order
+
+        colliders[0] = playerPaddle;
+        colliders[1] = opponentPaddle;
+        colliders[2] = playerGoal;
+        colliders[3] = opponentGoal;
+        colliders[4] = leftWall;
+        colliders[5] = rightWall;
+
+        //
+
         renderLeft = new ObjectBase[4]; //needs to be expanded if more than 1 ball
         renderRight = new ObjectBase[4]; //needs to be expanded if more than 1 ball
 
@@ -96,8 +107,9 @@ public class Pong extends ObjectBase{
          * (walls & paddles change vel; goals kill ball)
          */
     }
-
+    
     public void tick(float deltaT, Vector3 playerSight) {
+
         if (getNumPucks() > 0) {
             playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
             opponentPaddle.updatePaddlePosition(paddleAI(opponentPaddle,deltaT)); //update opponent paddle
