@@ -75,73 +75,6 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
 
     /**
-     * Converts a raw text file, saved as a resource, into an OpenGL ES shader.
-     *
-     * @param type The type of shader we will be creating.
-     * @param resId The resource ID of the raw text file about to be turned into a shader.
-     * @return The shader object handler.
-     */
-    public int loadGLShader(int type, int resId) {
-        String code = readRawTextFile(resId);
-        int shader = GLES20.glCreateShader(type);
-        GLES20.glShaderSource(shader, code);
-        GLES20.glCompileShader(shader);
-
-        // Get the compilation status.
-        final int[] compileStatus = new int[1];
-        GLES20.glGetShaderiv(shader, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-        // If the compilation failed, delete the shader.
-        if (compileStatus[0] == 0) {
-            Log.e(TAG, "Error compiling shader: " + GLES20.glGetShaderInfoLog(shader));
-            GLES20.glDeleteShader(shader);
-            shader = 0;
-        }
-
-        if (shader == 0) {
-            throw new RuntimeException("Error creating shader.");
-        }
-
-        return shader;
-    }
-
-    /**
-     * Converts a raw text file into a string.
-     *
-     * @param resId The resource ID of the raw text file about to be turned into a shader.
-     * @return The context of the text file, or null in case of error.
-     */
-    private String readRawTextFile(int resId) {
-        InputStream inputStream = getResources().openRawResource(resId);
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            reader.close();
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Checks if we've had an error inside of OpenGL ES, and if so what that error is.
-     *
-     * @param label Label to report in case of error.
-     */
-    private static void checkGLError(String label) {
-        int error;
-        while ((error = GLES20.glGetError()) != GLES20.GL_NO_ERROR) {
-            Log.e(TAG, label + ": glError " + error);
-            throw new RuntimeException(label + ": glError " + error);
-        }
-    }
-
-    /**
      * Sets the view to our GvrView and initializes the transformation matrices we will use
      * to render our scene.
      */
@@ -150,7 +83,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         item = RenderResources.getInstance();
         item.setView(this);
 
-
+        lastFrame = System.currentTimeMillis();
         super.onCreate(savedInstanceState);
 
         initializeGvrView();
@@ -222,7 +155,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        checkGLError("colorParam");
+
 
         // Apply the eye transformation to the camera.
         Matrix.multiplyMM(view, 0, eye.getEyeView(), 0, camera, 0);
@@ -268,13 +201,11 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         headTransform.getForwardVector(forward,0);
 
         Vector3 lookAt = new Vector3();
-        lookAt.x =(float) Math.cos(forward[0])*10;
-
+        lookAt.x = 10.0f*(float)Math.tan(forward[0]);
         long thisFrameTime = System.currentTimeMillis();
-        gameInstance.tick((float)(thisFrameTime-lastFrame)/100.0f,lookAt);
+        gameInstance.tick((float)(thisFrameTime-lastFrame)/1000.0f,lookAt);
         lastFrame = thisFrameTime;
 
-        checkGLError("onReadyToDraw");
     }
 
     @Override
