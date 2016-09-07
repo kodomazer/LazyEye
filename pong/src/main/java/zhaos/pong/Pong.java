@@ -36,13 +36,24 @@ public class Pong extends ObjectBase{
         puck[0] = new Ball(this);
         playerPaddle = new Paddle(this,-20);
         opponentPaddle = new Paddle(this, 20);
-        playerGoal = new Goal(true);//locations of goals hardcoded into constructor
-        opponentGoal = new Goal(false);//locations of goals hardcoded into constructor
+        playerGoal = new Goal(this,true);//locations of goals hardcoded into constructor
+        opponentGoal = new Goal(this,false);//locations of goals hardcoded into constructor
         leftWall = new Wall(this,-10);
         rightWall = new Wall(this,10);
 //        gameOver = false;
         score = 0;
-        colliders = new Blocks[4];
+        colliders = new Blocks[6];
+
+        //Collide with paddles, goals, walls in order
+
+        colliders[0] = playerPaddle;
+        colliders[1] = opponentPaddle;
+        colliders[2] = playerGoal;
+        colliders[3] = opponentGoal;
+        colliders[4] = leftWall;
+        colliders[5] = rightWall;
+
+        //
 
         //Collide with paddles, goals, walls in order
 
@@ -96,8 +107,9 @@ public class Pong extends ObjectBase{
          * (walls & paddles change vel; goals kill ball)
          */
     }
+    
+    public void tick(float deltaT, Vector3 playerSight) {
 
-    private void tick(float deltaT, Vector3 playerSight) {
         if (getNumPucks() > 0) {
             playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
             opponentPaddle.updatePaddlePosition(paddleAI(opponentPaddle,deltaT)); //update opponent paddle

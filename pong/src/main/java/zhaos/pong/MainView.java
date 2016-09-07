@@ -46,6 +46,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
     private Floor wall;
 
+    protected long lastFrame;
     protected Pong gameInstance;
 
     protected RenderingBase[] renderList;
@@ -261,7 +262,17 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
         headTransform.getHeadView(headView, 0);
 
         headTransform.getQuaternion(headRotation, 0);
+        //deltaT: float
+        //LookAngle: Vector3
+        float[] forward = new float[10];
+        headTransform.getForwardVector(forward,0);
 
+        Vector3 lookAt = new Vector3();
+        lookAt.x =(float) Math.cos(forward[0])*10;
+
+        long thisFrameTime = System.currentTimeMillis();
+        gameInstance.tick((float)(thisFrameTime-lastFrame)/100.0f,lookAt);
+        lastFrame = thisFrameTime;
 
         checkGLError("onReadyToDraw");
     }
