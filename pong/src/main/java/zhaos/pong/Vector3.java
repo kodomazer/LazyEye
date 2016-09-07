@@ -57,4 +57,21 @@ public class Vector3 {
         return this.x * a.x + this.y * a.y + this.z * a.z;
     }
 
+   public float norm(){
+       return (float) Math.sqrt( x*x + y*y+z*z);
+   }
+
+    public Vector3 reflectOver(Vector3 b){//Assumes both vectors are in 2d xy plane; ignores z-coordinate.
+        float magnitude = b.norm();
+        Vector3 a = new Vector3(b.y/magnitude,b.x/magnitude);
+        return this.add(a.scale(this.dot(a)*-2));
+
+    }
+
+    public Vector3 reflectOverNorm(Vector3 a){//Assumes a has magnitude 1
+
+        return this.add(a.scale(this.dot(a)*-2));
+
+    }
+
 }
