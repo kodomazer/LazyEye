@@ -9,7 +9,8 @@ public class Goal extends Blocks{
     private int score;
 
 
-    public Goal(boolean isPlayerGoal) {
+    public Goal(ObjectBase parent, boolean isPlayerGoal) {
+        super(parent);
         if(isPlayerGoal){
             transform = new Vector3(0,-25);
             score = -1;

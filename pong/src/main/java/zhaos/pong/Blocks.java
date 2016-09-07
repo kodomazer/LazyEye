@@ -15,4 +15,5 @@ public abstract class Blocks extends ObjectBase {
     public abstract boolean collidesWith(Ball ball, Vector3 velocity);
 
 
+
 }

@@ -22,7 +22,7 @@ public class Pong extends ObjectBase{
     private Wall leftWall;
     private Wall rightWall;
     private Blocks[] colliders;
-    private boolean gameOver;
+//    private boolean gameOver;
     private int score;
     private ObjectBase[] renderLeft;
     private ObjectBase[] renderRight;
@@ -31,6 +31,7 @@ public class Pong extends ObjectBase{
 
     public Pong(){
         super(null);
+        game = this;
         puck = new Ball[1];
         puck[0] = new Ball(this);
         playerPaddle = new Paddle(this,-20);
@@ -39,7 +40,7 @@ public class Pong extends ObjectBase{
         opponentGoal = new Goal(false);//locations of goals hardcoded into constructor
         leftWall = new Wall(this,-10);
         rightWall = new Wall(this,10);
-        gameOver = false;
+//        gameOver = false;
         score = 0;
         colliders = new Blocks[4];
 
@@ -99,7 +100,7 @@ public class Pong extends ObjectBase{
     private void tick(float deltaT, Vector3 playerSight) {
         if (getNumPucks() > 0) {
             playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
-            opponentPaddle.updatePaddlePosition(paddleAI()); //update opponent paddle
+            opponentPaddle.updatePaddlePosition(paddleAI(opponentPaddle,deltaT)); //update opponent paddle
 
             //move balls
             for (Ball b : puck) {
@@ -118,9 +119,15 @@ public class Pong extends ObjectBase{
         }
     }
 
-    private float paddleAI(){
-        //TODO create opponent paddle AI
-        return 0;
+    private float paddleAI(Paddle controlledPaddle, float deltaT){
+        Ball closestApproaching = getPuck(1);
+        for (Ball b: puck) {
+            if (b.getVelocity().y > 0 && b.getPosition().y > closestApproaching.getPosition().y) {
+                closestApproaching = b;
+            }
+        }
+        float noisyDistance = closestApproaching.transform.x - controlledPaddle.transform.x + (float) Math.random()/2 *deltaT ;
+        return controlledPaddle.getPosition().x+ Math.copySign(Math.max(Math.abs(noisyDistance),10*deltaT),noisyDistance);
     }
 
     public void updateScore(int i){

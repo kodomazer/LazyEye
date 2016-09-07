@@ -42,8 +42,12 @@ public class Ball extends ObjectBase {
         super.translate(velocity.scale(deltaT));
     }
 
-    public void bounceAngle(Vector3 newVelocity){
+    public void setVelocity(Vector3 newVelocity){
         velocity = newVelocity;
+    }
+
+    public void speedUp(float modifier){ //multiplicative modifier (if double the speed then use modifier of 2)
+        velocity = velocity.scale(modifier);
     }
 
 }

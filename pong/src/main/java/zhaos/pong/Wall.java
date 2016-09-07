@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
  * vertical wall
  */
 public class Wall extends Blocks {
+    private Vector3 norm = new Vector3(1);
 
     public Wall(ObjectBase parent,float position){
         super(parent);
@@ -28,7 +29,7 @@ public class Wall extends Blocks {
         if((b.transform.x - transform.x) * (b.transform.x + delta.x - transform.x) < 0){
             Vector3 intercept = b.transform.add(delta.scale((transform.x-b.transform.x)/delta.x));
             b.setPosition(intercept);
-            //// TODO: 9/5/2016 update velocity after bounce
+            b.setVelocity(b.getVelocity().reflectOverNorm(norm)); // update velocity after bounce
             return true;
         } else {return false;}
     }
