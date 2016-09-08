@@ -4,24 +4,33 @@ package zhaos.pong;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 
+import static zhaos.pong.Pong.getGame;
+
+
 /**
  * Created by ambersz on 9/4/2016.
  * vertical wall
  */
 public class Wall extends Blocks {
     private Vector3 norm = new Vector3(1);
+    private int isRightWall;
 
     public Wall(ObjectBase parent,float position){
         super(parent);
         transform.x = position;
+        if(position>0){
+            isRightWall = 1;
+        }else {
+            isRightWall = -1;
+        }
         thickness = 0.5f;
 
         Quad wall = new Quad(this);
         wall.setVertices(
-                new Vector3(-thickness,10),
-                new Vector3(thickness,10),
-                new Vector3(thickness,-10),
-                new Vector3(-thickness,-10));
+                new Vector3(-thickness,getGame().getGameHeight()),
+                new Vector3(thickness,getGame().getGameHeight()),
+                new Vector3(thickness,-getGame().getGameHeight()),
+                new Vector3(-thickness,-getGame().getGameHeight()));
         render = wall;
     }
 
@@ -36,7 +45,9 @@ public class Wall extends Blocks {
             return false;
         }
 
-        if((collisionDistance) * (collisionDistance + delta.x) < 0){
+        if(isRightWall*collisionDistance>0 || isRightWall * (collisionDistance+delta.x) >0){
+
+//        if((collisionDistance) * (collisionDistance + delta.x) < 0){
             Vector3 intercept = b.transform.add(delta.scale(-(collisionDistance)/delta.x));
             b.setPosition(intercept);
             b.setVelocity(b.getVelocity().reflectOverNorm(norm)); // update velocity after bounce

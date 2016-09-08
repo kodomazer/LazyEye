@@ -17,8 +17,8 @@ public class Ball extends ObjectBase {
 
     public Ball(ObjectBase parent) {
         super(parent);
-        transform = new Vector3(0, 2);
-        velocity = new Vector3(0, -5);
+        transform = new Vector3(0f, 0f);
+        velocity = new Vector3(-0.01f, -7);
         radius =1;
         active = true;
 
