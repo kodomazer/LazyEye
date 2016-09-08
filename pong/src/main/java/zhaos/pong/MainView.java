@@ -67,6 +67,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
     @Override
     public void onRendererShutdown() {
         Log.i(TAG, "onRendererShutdown");
+        RenderResources.getInstance().GLESUnloaded();
     }
     @Override
     public void onSurfaceChanged(int width, int height) {
