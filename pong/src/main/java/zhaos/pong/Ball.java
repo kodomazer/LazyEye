@@ -10,19 +10,21 @@ import java.util.Vector;
  */
 public class Ball extends ObjectBase {
     protected Vector3 velocity;
-
-
     protected boolean active;
+    protected float radius;
+
+
 
     public Ball(ObjectBase parent) {
         super(parent);
-        transform = new Vector3(0, 5);
-        velocity = new Vector3(0, -1);
+        transform = new Vector3(0f, 0f);
+        velocity = new Vector3(-0.01f, -7);
+        radius =1;
         active = true;
 
         UniformRadialRender ball = new UniformRadialRender(this);
         ball.setSections(20);
-        ball.setRadius(1);
+        ball.setRadius(radius);
         render = ball;
     }
 
@@ -48,6 +50,10 @@ public class Ball extends ObjectBase {
 
     public void speedUp(float modifier){ //multiplicative modifier (if double the speed then use modifier of 2)
         velocity = velocity.scale(modifier);
+    }
+
+    public float getRadius(){
+        return radius;
     }
 
 }

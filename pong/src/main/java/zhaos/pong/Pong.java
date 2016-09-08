@@ -22,38 +22,31 @@ public class Pong extends ObjectBase{
     private Wall leftWall;
     private Wall rightWall;
     private Blocks[] colliders;
-//    private boolean gameOver;
     private int score;
     private ObjectBase[] renderLeft;
     private ObjectBase[] renderRight;
     private Goal playerGoal;
     private Goal opponentGoal;
+    private float gameHeight;
+    private float gameWidth;
 
     public Pong(){
         super(null);
         game = this;
+        gameHeight = 15;//setting play area height and width
+        gameWidth = 10;
         puck = new Ball[1];
         puck[0] = new Ball(this);
-        playerPaddle = new Paddle(this,-20);
-        opponentPaddle = new Paddle(this, 20);
-        playerGoal = new Goal(this,true);//locations of goals hardcoded into constructor
-        opponentGoal = new Goal(this,false);//locations of goals hardcoded into constructor
-        leftWall = new Wall(this,-10);
-        rightWall = new Wall(this,10);
+        playerPaddle = new Paddle(this,-gameHeight, 5);
+        opponentPaddle = new Paddle(this, gameHeight, 5);
+        playerGoal = new Goal(this,-gameHeight-5,-1);//goals 5 units beyond game boundaries
+        opponentGoal = new Goal(this,gameHeight+5, 1);
+        leftWall = new Wall(this,-gameWidth);
+        rightWall = new Wall(this,gameWidth);
+
 //        gameOver = false;
         score = 0;
         colliders = new Blocks[6];
-
-        //Collide with paddles, goals, walls in order
-
-        colliders[0] = playerPaddle;
-        colliders[1] = opponentPaddle;
-        colliders[2] = playerGoal;
-        colliders[3] = opponentGoal;
-        colliders[4] = leftWall;
-        colliders[5] = rightWall;
-
-        //
 
         //Collide with paddles, goals, walls in order
 
@@ -80,10 +73,10 @@ public class Pong extends ObjectBase{
 
         Quad background = new Quad(this);
         background.setVertices(
-                new Vector3(-10,20,-1),
-                new Vector3(10,20,-1),
-                new Vector3(10,-20,-1),
-                new Vector3(-10,-20,-1));
+                new Vector3(-gameWidth,gameHeight,-0.1f),
+                new Vector3(gameWidth,gameHeight,-0.1f),
+                new Vector3(gameWidth,-gameHeight,-0.1f),
+                new Vector3(-gameWidth,-gameHeight,-0.1f));
         render = background;
         render.setUniformColor(new float[]{0.5f,0.5f,0.5f,0.5f});
         translate(new Vector3(0,0,-20));
@@ -107,7 +100,7 @@ public class Pong extends ObjectBase{
          * (walls & paddles change vel; goals kill ball)
          */
     }
-    
+
     public void tick(float deltaT, Vector3 playerSight) {
 
         if (getNumPucks() > 0) {
@@ -139,7 +132,7 @@ public class Pong extends ObjectBase{
             }
         }
         float noisyDistance = closestApproaching.transform.x - controlledPaddle.transform.x + (float) Math.random()/2 *deltaT ;
-        return controlledPaddle.getPosition().x+ Math.copySign(Math.max(Math.abs(noisyDistance),10*deltaT),noisyDistance);
+        return controlledPaddle.getPosition().x+ Math.copySign(Math.min(Math.abs(noisyDistance),deltaT*10*10/16),noisyDistance);
     }
 
     public void updateScore(int i){
@@ -160,6 +153,14 @@ public class Pong extends ObjectBase{
         return num;
     }
 
+    public float getGameWidth(){
+        return gameWidth;
+    }
+
+    public float getGameHeight(){
+        return gameHeight;
+    }
+
     public Paddle getPlayer(){
         return playerPaddle;
     }
@@ -173,4 +174,5 @@ public class Pong extends ObjectBase{
     public ObjectBase[] getRenderListRight(){
         return renderRight;
     }
+
 }

@@ -1,5 +1,7 @@
 package zhaos.pong;
 
+import android.util.Log;
+
 /**
  * Created by kodomazer on 9/4/2016.
  */
@@ -70,8 +72,8 @@ public class Vector3 {
 
     public Vector3 reflectOverNorm(Vector3 a){//Assumes a has magnitude 1
 
-        return this.add(a.scale(this.dot(a)*-2));
-
+        Vector3 temp = this.add(a.scale(this.dot(a)*-2));
+        return  temp;
     }
 
 }

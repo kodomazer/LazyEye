@@ -9,15 +9,10 @@ public class Goal extends Blocks{
     private int score;
 
 
-    public Goal(ObjectBase parent, boolean isPlayerGoal) {
+    public Goal(ObjectBase parent, float yCoord, int goalScore) {
         super(parent);
-        if(isPlayerGoal){
-            transform = new Vector3(0,-25);
-            score = -1;
-        }else {
-            transform = new Vector3(0,25);
-            score = 1;
-        }
+        transform = new Vector3(0,yCoord);
+        score = goalScore;
 
     }
 
