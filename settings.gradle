@@ -33,4 +33,4 @@ rootProject.children.clear()
 // Add the subdirectories as top-level modules.
 rootProject.children.addAll(moduleList)
 
-include ':app', ':pong'
+include ':pong'

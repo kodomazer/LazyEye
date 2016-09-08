@@ -3,7 +3,7 @@
     package="zhaos.pong">
 
     <!-- The GVR SDK requires API 19+ and OpenGL ES 2+. -->
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="24" />
+    <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="23" />
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
     <!-- Make accelerometer and gyroscope hard requirements for good head tracking. -->
@@ -26,8 +26,7 @@
         <activity
             android:name=".MainView"
             android:screenOrientation="landscape"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:enableVrMode="@string/gvr_vr_mode_component">
+            android:configChanges="orientation|keyboardHidden|screenSize">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
