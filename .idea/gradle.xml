@@ -5,10 +5,10 @@
       <GradleProjectSettings>
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="C:/Program Files/Android/Android Studio/gradle/gradle-2.14.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libraries/audio" />
             <option value="$PROJECT_DIR$/libraries/base" />
             <option value="$PROJECT_DIR$/libraries/common" />
@@ -22,7 +22,6 @@
         <option name="myModules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/libraries/audio" />
             <option value="$PROJECT_DIR$/libraries/base" />
             <option value="$PROJECT_DIR$/libraries/common" />
