@@ -30,7 +30,7 @@ public class Paddle extends Blocks {
         transform  = new Vector3(0,Math.copySign(Math.abs(y)-thickness,y));
         leftPaddleWall = -getGame().getGameWidth() + paddleRadius;
         rightPaddleWall = getGame().getGameWidth() - paddleRadius;
-        curvature = (float) Math.PI / 6 / paddleRadius;
+        curvature = (float) Math.PI / 12 / paddleRadius;
 
         Quad paddle = new Quad(this);
         paddle.setVertices(

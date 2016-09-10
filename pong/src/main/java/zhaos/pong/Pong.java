@@ -29,6 +29,7 @@ public class Pong extends ObjectBase{
     private Goal opponentGoal;
     private float gameHeight;
     private float gameWidth;
+    private float countdown;
 
     public Pong(){
         super(null);
@@ -43,6 +44,7 @@ public class Pong extends ObjectBase{
         opponentGoal = new Goal(this,gameHeight+5, 1);
         leftWall = new Wall(this,-gameWidth);
         rightWall = new Wall(this,gameWidth);
+        countdown = 2;
 
 //        gameOver = false;
         score = 0;
@@ -103,24 +105,29 @@ public class Pong extends ObjectBase{
 
     public void tick(float deltaT, Vector3 playerSight) {
 
-        if (getNumPucks() > 0) {
-            playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
-            opponentPaddle.updatePaddlePosition(paddleAI(opponentPaddle,deltaT)); //update opponent paddle
+        if(countdown>0){
+            countdown-=deltaT;
+        } else {
 
-            //move balls
-            for (Ball b : puck) {
-                if (checkCollisions(b, deltaT)) {
-                    break;
-                } else {
-                    b.move(deltaT);
+            if (getNumPucks() > 0) {
+                playerPaddle.updatePaddlePosition(playerSight.x); //update paddle positions
+                opponentPaddle.updatePaddlePosition(paddleAI(opponentPaddle, deltaT)); //update opponent paddle
+
+                //move balls
+                for (Ball b : puck) {
+                    if (checkCollisions(b, deltaT)) {
+                        break;
+                    } else {
+                        b.move(deltaT);
+                    }
                 }
-            }
-        }else if(score>0) {
+            } else if (score > 0) {
                 //TODO GAME OVER; YOU WIN
-        } else if(score < 0){
+            } else if (score < 0) {
                 //TODO GAME OVER; YOU LOSE
-        } else {// SCORE IS 0 AND SOMETHING WENT WRONG
+            } else {// SCORE IS 0 AND SOMETHING WENT WRONG
 
+            }
         }
     }
 
@@ -132,7 +139,7 @@ public class Pong extends ObjectBase{
             }
         }
         float noisyDistance = closestApproaching.transform.x - controlledPaddle.transform.x + (float) Math.random()/2 *deltaT ;
-        return controlledPaddle.getPosition().x+ Math.copySign(Math.min(Math.abs(noisyDistance),deltaT*10*10/16),noisyDistance);
+        return controlledPaddle.getPosition().x+ Math.copySign(Math.min(Math.abs(noisyDistance),deltaT*10),noisyDistance);
     }
 
     public void updateScore(int i){
