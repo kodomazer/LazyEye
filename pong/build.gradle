@@ -2,8 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
-
+    buildToolsVersion '24.0.2'
     defaultConfig {
         applicationId "zhaos.pong"
         minSdkVersion 19
@@ -17,10 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile project(':libraries-audio')
     compile project(':libraries-base')
     compile project(':libraries-common')
 }

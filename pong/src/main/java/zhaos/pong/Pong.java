@@ -1,9 +1,6 @@
 package zhaos.pong;
 
 
-import android.util.Log;
-
-import java.util.function.ToDoubleBiFunction;
 
 /**
  * Created by kodomazer on 9/2/2016.

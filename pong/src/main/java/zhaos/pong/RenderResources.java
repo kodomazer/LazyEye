@@ -38,6 +38,10 @@ public class RenderResources {
         shader[PASSTHROUGH_SHADER] = loadGLShader(GLES20.GL_FRAGMENT_SHADER, R.raw.passthrough_fragment);
     }
 
+    public void GLESUnloaded(){
+        GLES = false;
+    }
+
     public static int getShader(int id){
         return shader[id];
     }
