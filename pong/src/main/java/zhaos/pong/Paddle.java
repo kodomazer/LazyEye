@@ -80,7 +80,12 @@ public class Paddle extends Blocks {
             if (Math.abs(intercept.x - transform.x) < paddleRadius) {
                 b.setPosition(intercept);
 
-                b.setVelocity(b.getVelocity().reflectOverNorm(getBounceNorm(intercept.x - transform.x)).scale(1.1f)); //update velocity after bounce
+                Vector3 tempVelocity = b.getVelocity().reflectOverNorm(getBounceNorm(intercept.x - transform.x));
+                float oldY = tempVelocity.y;
+                tempVelocity.y = -Math.copySign(b.getVelocity().y*1.1f,b.getVelocity().y);
+                tempVelocity.x = Math.copySign(tempVelocity.x*tempVelocity.y/oldY, tempVelocity.x);
+
+                b.setVelocity(tempVelocity); //update velocity after bounce
 
                 return true;
             } else {

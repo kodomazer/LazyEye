@@ -1,9 +1,13 @@
 package zhaos.pong;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.Vector;
+
+import static zhaos.pong.Pong.getGame;
 
 /**
  * Created by kodomazer on 9/3/2016.
@@ -15,8 +19,9 @@ public class Ball extends ObjectBase {
 
 
 
-    public Ball(ObjectBase parent) {
+    public Ball(ObjectBase parent,boolean placeRandom) {
         super(parent);
+
         transform = new Vector3(0f, 0f);
         velocity = new Vector3(-0.01f, -7);
         radius =1;
@@ -26,13 +31,18 @@ public class Ball extends ObjectBase {
         ball.setSections(20);
         ball.setRadius(radius);
         render = ball;
+
+        if(placeRandom){
+            transform = new Vector3((float) Math.random()*getGame().getGameWidth()-getGame().getGameWidth()/2,(float) Math.random()*getGame().getGameWidth()-getGame().getGameWidth()/2);
+            velocity = new Vector3((float) Math.random(),Math.copySign(7,(float) Math.random())-0.5f);
+        }
     }
 
     public boolean isActive() {
         return active;
     }
     public void kill(){//kill ball when collides with goals
-        active = false;
+        this.active = false;
     }
 
 

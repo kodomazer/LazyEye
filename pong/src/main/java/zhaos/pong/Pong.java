@@ -1,6 +1,8 @@
 package zhaos.pong;
 
 
+import android.util.Log;
+
 import java.util.function.ToDoubleBiFunction;
 
 /**
@@ -22,7 +24,7 @@ public class Pong extends ObjectBase{
     private Wall leftWall;
     private Wall rightWall;
     private Blocks[] colliders;
-    private int score;
+    private Vector3 score;
     private ObjectBase[] renderLeft;
     private ObjectBase[] renderRight;
     private Goal playerGoal;
@@ -30,6 +32,7 @@ public class Pong extends ObjectBase{
     private float gameHeight;
     private float gameWidth;
     private float countdown;
+    private int newBalls;
 
     public Pong(){
         super(null);
@@ -37,17 +40,18 @@ public class Pong extends ObjectBase{
         gameHeight = 15;//setting play area height and width
         gameWidth = 10;
         puck = new Ball[1];
-        puck[0] = new Ball(this);
+        puck[0] = new Ball(this, true);
         playerPaddle = new Paddle(this,-gameHeight, 5);
         opponentPaddle = new Paddle(this, gameHeight, 5);
-        playerGoal = new Goal(this,-gameHeight-5,-1);//goals 5 units beyond game boundaries
-        opponentGoal = new Goal(this,gameHeight+5, 1);
+        playerGoal = new Goal(this,-gameHeight-5,new Vector3(0,1));//goals 5 units beyond game boundaries
+        opponentGoal = new Goal(this,gameHeight+5, new Vector3(1,0));
         leftWall = new Wall(this,-gameWidth);
         rightWall = new Wall(this,gameWidth);
         countdown = 2;
+        newBalls = 4;
 
 //        gameOver = false;
-        score = 0;
+        score = new Vector3(0,0);
         colliders = new Blocks[6];
 
         //Collide with paddles, goals, walls in order
@@ -70,8 +74,13 @@ public class Pong extends ObjectBase{
         renderLeft[1] = renderRight[1] = rightWall;
         renderLeft[2] = renderRight[2] = opponentPaddle;
         renderRight[3] = playerPaddle;
-        renderLeft[3] = getPuck(1);
-        // ONLY THE FIRST BALL WILL BE RENDERED IF INCLUDING MORE THAN ONE
+        //renderLeft[3] = getPuck(1);
+        int num = 3;
+        for(Ball b:puck){
+            renderLeft[num] = b;
+            num +=1;
+        }
+        // ALL BALLS RENDERED ON LEFT
 
         Quad background = new Quad(this);
         background.setVertices(
@@ -107,6 +116,7 @@ public class Pong extends ObjectBase{
 
         if(countdown>0){
             countdown-=deltaT;
+
         } else {
 
             if (getNumPucks() > 0) {
@@ -115,18 +125,40 @@ public class Pong extends ObjectBase{
 
                 //move balls
                 for (Ball b : puck) {
-                    if (checkCollisions(b, deltaT)) {
-                        break;
-                    } else {
-                        b.move(deltaT);
+                    if(b.isActive()) {
+                        if (checkCollisions(b, deltaT)) {
+                            continue;
+                        } else {
+                            b.move(deltaT);
+                        }
                     }
                 }
-            } else if (score > 0) {
-                //TODO GAME OVER; YOU WIN
-            } else if (score < 0) {
-                //TODO GAME OVER; YOU LOSE
-            } else {// SCORE IS 0 AND SOMETHING WENT WRONG
+//            } else if (score > 0) {
+//
+//                //TODO GAME OVER; YOU WIN
+//            } else if (score < 0) {
+//                //TODO GAME OVER; YOU LOSE
+            } else {
+                if(score.x/score.y>2.4f){
+                    newBalls +=1;
+                } else if(score.x/score.y > 2.3){
 
+                } else {
+                    newBalls = Math.max(1, newBalls-1);
+                }
+                puck = new Ball[newBalls];
+
+                renderLeft = new ObjectBase[3+newBalls];
+
+                //render ball on left and paddle on right, all else rendered for both eyes
+
+                renderLeft[0] = leftWall;
+                renderLeft[1] = rightWall;
+                renderLeft[2] = opponentPaddle;
+
+                for(int i = 0; i<newBalls; i++){
+                    renderLeft[i+3] = puck[i] = new Ball(this,true);
+                }
             }
         }
     }
@@ -139,11 +171,11 @@ public class Pong extends ObjectBase{
             }
         }
         float noisyDistance = closestApproaching.transform.x - controlledPaddle.transform.x + (float) Math.random()/2 *deltaT ;
-        return controlledPaddle.getPosition().x+ Math.copySign(Math.min(Math.abs(noisyDistance),deltaT*10),noisyDistance);
+        return controlledPaddle.getPosition().x+ Math.copySign(Math.min(Math.abs(noisyDistance),deltaT*10/20),noisyDistance);
     }
 
-    public void updateScore(int i){
-        score +=i;
+    public void updateScore(Vector3 i){
+        score = score.add(i);
     }
 
     public Ball getPuck(int i){

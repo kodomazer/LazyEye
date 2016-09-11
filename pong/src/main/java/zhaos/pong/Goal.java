@@ -6,10 +6,10 @@ import static zhaos.pong.Pong.getGame;
  * Created by ambersz on 9/5/2016.
  */
 public class Goal extends Blocks{
-    private int score;
+    private Vector3 score;
 
 
-    public Goal(ObjectBase parent, float yCoord, int goalScore) {
+    public Goal(ObjectBase parent, float yCoord, Vector3 goalScore) {
         super(parent);
         transform = new Vector3(0,yCoord);
         score = goalScore;
@@ -17,7 +17,13 @@ public class Goal extends Blocks{
     }
 
     public boolean collidesWith(Ball b, Vector3 delta){
-        if((b.transform.y - transform.y) * (b.transform.y + delta.y - transform.y) < 0){
+        float direction;
+        if (score.y>0){
+            direction = -1;
+        } else {
+            direction = 1;
+        }
+        if(direction * (b.transform.y + delta.y - transform.y) > 0){
             getGame().updateScore(score);
             b.kill();
             return true;
