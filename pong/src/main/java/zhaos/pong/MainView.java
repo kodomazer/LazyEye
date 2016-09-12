@@ -13,10 +13,6 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import javax.microedition.khronos.egl.EGLConfig;
 
@@ -67,7 +63,7 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
     @Override
     public void onRendererShutdown() {
         Log.i(TAG, "onRendererShutdown");
-        RenderResources.getInstance().GLESUnloaded();
+       RenderResources.getInstance().GLESUnloaded();
     }
     @Override
     public void onSurfaceChanged(int width, int height) {
@@ -89,12 +85,9 @@ public class MainView extends GvrActivity implements GvrView.StereoRenderer {
 
         initializeGvrView();
 
-//        modelCube = new float[16];
         camera = new float[16];
         view = new float[16];
-//        tempPosition = new float[4];
-        // Model first appears directly in front of user.
-//        modelPosition = new float[] {0.0f, 0.0f, -MAX_MODEL_DISTANCE / 2.0f};
+
         headRotation = new float[4];
         headView = new float[16];
         wall = new Floor();
