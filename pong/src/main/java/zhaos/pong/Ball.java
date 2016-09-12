@@ -1,5 +1,6 @@
 package zhaos.pong;
 
+import android.text.LoginFilter;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -34,7 +35,7 @@ public class Ball extends ObjectBase {
 
         if(placeRandom){
             transform = new Vector3((float) Math.random()*getGame().getGameWidth()-getGame().getGameWidth()/2,(float) Math.random()*getGame().getGameWidth()-getGame().getGameWidth()/2);
-            velocity = new Vector3((float) Math.random(),Math.copySign(7,(float) Math.random())-0.5f);
+            velocity = new Vector3((float) Math.random(),Math.copySign(10,(float) Math.random()-0.5f));
         }
     }
 

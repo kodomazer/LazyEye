@@ -136,12 +136,14 @@ public class Pong extends ObjectBase{
 //            } else if (score < 0) {
 //                //TODO GAME OVER; YOU LOSE
             } else {
-                if(score.x/score.y>2.4f){
+                if((score.x+1)>(score.y+1)*4f){
                     newBalls +=1;
-                } else if(score.x/score.y > 2.3){
-
-                } else {
+                    score.x = score.y = 0;
+                } else if((score.y)>(score.x+1)*.5f){
                     newBalls = Math.max(1, newBalls-1);
+                    score.x = score.y = 0;
+                } else {
+//                    newBalls = Math.max(1, newBalls-1);
                 }
                 puck = new Ball[newBalls];
 
@@ -162,8 +164,15 @@ public class Pong extends ObjectBase{
 
     private float paddleAI(Paddle controlledPaddle, float deltaT){
         Ball closestApproaching = getPuck(1);
+        for(Ball b:puck){
+            if(b.isActive() && b.getPosition().y < getOpponent().getPosition().y){
+                closestApproaching = b;
+                break;
+            }
+        }
+
         for (Ball b: puck) {
-            if (b.getVelocity().y > 0 && b.getPosition().y > closestApproaching.getPosition().y) {
+            if (b.isActive() && b.getVelocity().y > 0 && b.getPosition().y > closestApproaching.getPosition().y && b.getPosition().y < getOpponent().getPosition().y) {
                 closestApproaching = b;
             }
         }
